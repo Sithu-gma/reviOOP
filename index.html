@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body {
+            background-color: skyblue;
+        }
+        .container {
+            width: 30rem;
+            margin: 5rem auto;
+            border: 1px solid #ddd;
+
+        }
+        .form{
+            background-color: #fff;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .form input{
+            width: 80%;
+            border: none;
+            outline: none;
+            padding: 0.7rem;
+            background-color: transparent;
+        }
+        .form .btn {
+            width: 20%;
+            background-color: darkblue;
+            border: none;
+            outline: none;
+            padding: 0.7rem;
+            cursor: pointer;
+            color: #ddd;
+        }
+        .list .todo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #fff;
+            margin-top: .5rem;
+            padding: .5rem;
+            border-radius: 2px;
+        }
+        .list span{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OOP todo List</h1>
+        <div class="form">
+            <input type="text" placeholder="todo...">
+            <button class="btn">Submit</button>
+        </div>
+
+        <div class="list">
+            <div class="todo">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio, reprehenderit?</p>
+                <span>Del</span>
+            </div>
+           
+        </div>
+    </div>
+</body>
+</html>
