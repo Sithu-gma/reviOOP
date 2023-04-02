@@ -4,76 +4,153 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>OOP</title>
     <style>
         *{
-            margin: 0;
-            padding: 0;
+            margin:0;
+            padding:0;
             box-sizing: border-box;
-            font-family: sans-serif;
+            font-family:Arial, Helvetica, sans-serif
         }
-        body {
+        body{
             background-color: skyblue;
         }
         .container {
+            margin:3rem auto;
             width: 30rem;
-            margin: 5rem auto;
-            border: 1px solid #ddd;
 
         }
-        .form{
+        .container .form{
             background-color: #fff;
-            margin-top: 1rem;
+            margin: 2rem 0;
             display: flex;
-            align-items: center;
+            align-items:center;
             border-radius: 5px;
             overflow: hidden;
         }
-        .form input{
-            width: 80%;
+        .form input {
+            flex:1;
+            padding:0.7rem;
             border: none;
             outline: none;
-            padding: 0.7rem;
             background-color: transparent;
         }
         .form .btn {
-            width: 20%;
-            background-color: darkblue;
-            border: none;
-            outline: none;
             padding: 0.7rem;
+            background-color: darkblue;
+            color: #fff;
             cursor: pointer;
-            color: #ddd;
+            border: none;
         }
-        .list .todo {
+        .todo {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background-color: #fff;
-            margin-top: .5rem;
-            padding: .5rem;
-            border-radius: 2px;
+            align-items:center;
+            justify-content: space-between;
+            gap:.5rem;
+            padding:.5rem;
         }
-        .list span{
+        .todo span {
             cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>OOP todo List</h1>
-        <div class="form">
-            <input type="text" placeholder="todo...">
+        <h1 class="title">OOP Todo List</h1>
+        <form action="" class="form" data-form>
+            <input type="text" placeholder="todo..." data-input>
             <button class="btn">Submit</button>
-        </div>
+        </form>
 
-        <div class="list">
-            <div class="todo">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio, reprehenderit?</p>
-                <span>Del</span>
-            </div>
-           
+        <div class="list" data-lists>
+            <!-- <div class="todo">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                </p>
+                <span class="remove">DEL</span>
+            </div> -->
         </div>
     </div>
+
+    
+    <script>
+        // grab all Ele
+        const form=document.querySelector("[data-form]");
+        const input=document.querySelector("[data-input]");
+        const lists=document.querySelector("[data-lists]");
+
+        class Storage {
+            static addToStorage(todoArr){
+                let storage=localStorage.setItem("todo", JSON.stringify(todoArr));
+                return storage;   
+            };
+            static getStorage(){
+                let storage=localStorage.getItem("todo")=== null ?[]:
+                JSON.parse(localStorage.getItem("todo"));
+                return storage;
+            }
+        }
+
+        let todoArr=Storage.getStorage();
+
+        form.addEventListener("submit",e => {
+            e.preventDefault();
+
+            let id=Math.random()*50000;
+            let todo= new Todo(id, input.value);
+            todoArr=[...todoArr,todo];
+            console.log(todoArr);
+            UI.displayData();
+            UI.clearInput();
+            UI.removeTodo();
+            // set localStorage
+            Storage.addToStorage(todoArr);
+
+        });
+        class Todo {
+            constructor (id, todo){
+                this.id=id;
+                this.todo=todo;
+            }
+        }
+
+        class UI {
+            static displayData(){
+                let displayData= todoArr.map((item) => {
+                    return `
+                    <div class="todo"> 
+                        <p>${item.todo}</p>
+                        <span class="remove" data-id=${item.id}>DEL</span>
+                    </div>
+                    `
+                });
+               lists.innerHTML = (displayData).join(" ");
+            }
+            
+            static clearInput () {
+                input.value="";
+            }
+            static removeTodo (){
+                lists.addEventListener('click', e =>{
+                    if(e.target.classList.contains("remove")){
+                        e.target.parentElement.remove();
+                    }
+                    let btnId=e.target.dataset.id;
+                    UI.removeArrayTodo(btnId);
+                })
+            }
+            static removeArrayTodo(id) {
+                todoArr=todoArr.filter( item => item.id !== +id);
+                Storage.addToStorage(todoArr);
+                
+            }
+        }
+        window.addEventListener("DOMContentLoaded",()=>{
+            UI.displayData();
+            UI.removeTodo();
+        })
+      
+        
+    </script>
 </body>
 </html>
