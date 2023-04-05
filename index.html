@@ -55,11 +55,23 @@
             padding: 0.3rem;
             margin-bottom: 1px;
             opacity: .9;
+            gap: 1rem;
         }
-        .todo span {
+        .todo p {
+            flex-grow: 1;
             cursor: pointer;
         }
-
+        .todo span ,.edit{
+            cursor: pointer;
+        }
+        .removeBtn {
+            margin-top: 2rem;
+            padding: 0.7rem;
+            color: #fff;
+            background-color: blue;
+            border-radius: 5px;
+        }
+        
     </style>
 </head>
 <body>
@@ -78,6 +90,10 @@
                 </p>
                 <span class="remove">Del</span>
             </div> -->
+
+        </div>
+        <div class="removeAll">
+            <button class="removeBtn">RemoveAll</button>
         </div>
 
     </div>
@@ -87,6 +103,7 @@
         const lists=document.querySelector("[data-list]");
         const input=document.querySelector("[data-input]");
         const form=document.querySelector("[data-form]");
+        const removeBtn=document.querySelector(".removeBtn");
 
         class Storage {
             static addToStorage(todoArr){
@@ -95,22 +112,27 @@
             }
 
             static getStorage(){
-                let storage=localStorage.getItem("todo")=== null ? [] :JSON.parse(localStorage.getItem("todo"));
+                let storage=localStorage.getItem("todo")=== null ? [] 
+                :JSON.parse(localStorage.getItem("todo"));
                 return storage;
             }
         }
 
         let todoArr=Storage.getStorage();
+        
         form.addEventListener("submit", e => {
             e.preventDefault();
+            if(input.value==="") {
+                exit();
+            }
             let id=Math.random()*100000;
             let todo=new Todo(id, input.value);
             todoArr=[...todoArr, todo];
                 UI.displayData();
                 UI.clearInput();
-                UI.removeTodo();
-
+                //UI.removeTodo();
                 Storage.addToStorage(todoArr);
+                UI.removeAllBtn();
            
             // console.log(todoArr);
            
@@ -134,6 +156,7 @@
                                         ${item.todo}
                                     </p>
                                     <span class="remove" data-id=${item.id}>Del</span>
+                                    <span class="edit" data-id=${item.id}>Edit</span>
                                 </div>                            
                             `
                 });
@@ -146,22 +169,71 @@
                 lists.addEventListener("click", e => {
                     if(e.target.classList.contains("remove")){
                         e.target.parentElement.remove();
+                        let btnId=e.target.dataset.id;
+                        UI.removeArrayTodo(btnId);
+                        UI.removeAllBtn();
                     }
-                    let btnId=e.target.dataset.id;
-                    UI.removeArrayTodo(btnId);
-                
                 })
             }
             static removeArrayTodo(id){
                 todoArr=todoArr.filter(item => item.id!== +id);
                 Storage.addToStorage(todoArr);
             }
-        }
 
+            static editBtn(){
+                let iconChange=true;
+                lists.addEventListener("click", e => {
+                    if(e.target.classList.contains("edit")){                        
+                        let p=e.target.parentElement.firstElementChild;
+                        const btnId=e.target.dataset.id;
+                   
+                        if(iconChange) {
+                            p.setAttribute("contentEditable","true");
+                            p.focus();
+                            p.style.color="blue";
+                            e.target.textContent="Save";
+                        }else {
+                            e.target.textContent="Edit";
+                            p.style.color="black";
+                            p.removeAttribute("contentEditable");
+                        }
+                        iconChange= !iconChange;
+                        const newArr=todoArr.findIndex(item => item.id=== +btnId);
+                    //console.log(newArr)
+                            todoArr[newArr].todo=p.textContent;
+                            Storage.addToStorage(todoArr);
+                    }               
+                        
+                });
+            }
+            static removeAll(){
+                    removeBtn.addEventListener('click' , ()=>{
+                       
+                      todoArr.length=0;
+                        localStorage.clear();
+                        UI.displayData();
+                        UI.removeAllBtn();
+                    })
+            }
+
+            static removeAllBtn () {
+                if(todoArr.length <= 0){
+                    removeBtn.style.display="none";
+                }else {
+                    removeBtn.style.display="flex";
+                }
+            }
+        }
+        
        
         window.addEventListener("DOMContentLoaded", ()=>{
             UI.displayData();
+            UI.editBtn();
+            UI.editBtn();
             UI.removeTodo();
+           
+            UI.removeAll();
+            UI.removeAllBtn();
         })
     </script>
 
